@@ -1,0 +1,45 @@
+# Builds the Android TV launcher APK automatically on GitHub (free).
+#
+# How to use:
+#   1. Push this repository to GitHub (the "android-tv" folder + this file).
+#   2. Open the "Actions" tab -> "Build Android TV APK" -> latest run.
+#      (Or press "Run workflow" to build on demand.)
+#   3. Scroll to "Artifacts" and download "sahaj-launcher-apk". Unzip it to get the .apk files.
+name: Build Android TV APK
+
+on:
+  push:
+    paths:
+      - "android-tv/**"
+      - ".github/workflows/build-apk.yml"
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get the code
+        uses: actions/checkout@v4
+
+      - name: Install Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Set up Gradle (with download cache)
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Build the APK files
+        working-directory: android-tv
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleRelease assembleDebug --no-daemon
+
+      - name: Save the APK files
+        uses: actions/upload-artifact@v4
+        with:
+          name: sahaj-launcher-apk
+          path: |
+            android-tv/app/build/outputs/apk/release/*.apk
+            android-tv/app/build/outputs/apk/debug/*.apk

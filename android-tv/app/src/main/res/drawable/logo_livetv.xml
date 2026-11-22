@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Live TV tile logo: television with antenna and play triangle. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="72dp"
+    android:height="64dp"
+    android:viewportWidth="90"
+    android:viewportHeight="80">
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M31,6 L45,20 L60,6"
+        android:strokeColor="#496145"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:strokeWidth="3" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M21,22 H69 A12,12 0 0 1 81,34 V58 A12,12 0 0 1 69,70 H21 A12,12 0 0 1 9,58 V34 A12,12 0 0 1 21,22 Z"
+        android:strokeColor="#496145"
+        android:strokeLineCap="round"
+        android:strokeWidth="3" />
+    <path
+        android:fillColor="#496145"
+        android:pathData="M38,35 L57,46 L38,57 Z" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M33,77 H57"
+        android:strokeColor="#496145"
+        android:strokeLineCap="round"
+        android:strokeWidth="3" />
+</vector>

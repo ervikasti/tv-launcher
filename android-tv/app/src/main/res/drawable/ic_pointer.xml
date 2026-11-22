@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Up-arrow shown in the circle under the selected app tile. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="40dp"
+    android:height="40dp"
+    android:viewportWidth="40"
+    android:viewportHeight="40">
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M18,5 a3,3 0 0 1 4,0 l12,12 a3,3 0 0 1 -4,4 l-7,-7 v19 a3,3 0 0 1 -6,0 V14 l-7,7 a3,3 0 0 1 -4,-4 Z" />
+</vector>

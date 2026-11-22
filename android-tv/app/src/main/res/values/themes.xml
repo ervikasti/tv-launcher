@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="window_bg">#F7F6EF</color>
+
+    <!-- Main screen theme (plain framework Material theme: no extra libraries). -->
+    <style name="Theme.Sahaj" parent="@android:style/Theme.Material.NoActionBar">
+        <item name="android:windowBackground">@color/window_bg</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
+    <!-- Pop-up windows (settings etc.): transparent full-screen window with a dim background. -->
+    <style name="Theme.Sahaj.Dialog" parent="@android:style/Theme.Material.NoActionBar">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:backgroundDimAmount">0.35</item>
+    </style>
+</resources>

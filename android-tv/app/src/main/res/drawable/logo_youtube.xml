@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- YouTube tile logo: red rounded box with a play triangle. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="80dp"
+    android:height="56dp"
+    android:viewportWidth="100"
+    android:viewportHeight="70">
+    <path
+        android:fillColor="#D54B3F"
+        android:pathData="M23,5 H77 A19,19 0 0 1 96,24 V46 A19,19 0 0 1 77,65 H23 A19,19 0 0 1 4,46 V24 A19,19 0 0 1 23,5 Z" />
+    <path
+        android:fillColor="#FFFAF3"
+        android:pathData="M42,22 L67,35 L42,49 Z" />
+</vector>
