@@ -19,6 +19,7 @@ import com.sahaj.launcher.config.displayName
 import com.sahaj.launcher.i18n.TextBinder
 import com.sahaj.launcher.i18n.Translator
 import com.sahaj.launcher.util.NetworkUtil
+import java.util.ArrayList
 
 /**
  * The main home screen: top bar, big app title, and the row of app tiles.
@@ -44,7 +45,7 @@ class HomeScreen(
     val view = FrameLayout(context)
 
     private var apps: List<AppEntry> = initialApps
-    private var selectedIndex = minOf(LauncherConfig.DEFAULT_SELECTED_INDEX, initialApps.lastIndex)
+    private var selectedIndex = getDefaultSelectedIndex(initialApps)
     private var largeText = false
     private var pointerColor = Color.parseColor("#405b36")
 
@@ -80,6 +81,7 @@ class HomeScreen(
             onNetworkClick = { callbacks.onOpenNetwork() },
             onSettingsClick = { callbacks.onOpenSettings() },
             onMoveDown = { focusSelectedTile() },
+            onFocusChanged = { applySelection() },
         )
 
         // Vertical stack: top bar, then the centre area that fills the rest.
@@ -127,25 +129,47 @@ class HomeScreen(
         binder.refresh()
     }
 
+    /** Finds the default index: YouTube if present, otherwise the center app tile. */
+    private fun getDefaultSelectedIndex(appList: List<AppEntry>): Int {
+        if (appList.isEmpty()) return 0
+        var i = 0
+        while (i < appList.size) {
+            val entry = appList[i]
+            if (entry.id == "youtube") return i
+            var j = 0
+            while (j < entry.packages.size) {
+                if ((entry.packages[j] as java.lang.String).indexOf("youtube") >= 0) return i
+                j++
+            }
+            i++
+        }
+        return appList.size / 2
+    }
+
     /** Moves the remote's focus to the currently selected app tile. */
     fun focusSelectedTile() {
-        val target: View? = tiles.getOrNull(selectedIndex) ?: tiles.firstOrNull()
+        val target: View? = if (selectedIndex >= 0 && selectedIndex < tiles.size) tiles[selectedIndex] else if (tiles.size > 0) tiles[0] else null
         if (target != null) {
             target.requestFocus()
             scroller.requestChildFocus(row, target)
         }
     }
 
+    /** Resets the selection to YouTube (or center app) and moves remote focus to it. */
+    fun resetFocusToDefault() {
+        selectedIndex = getDefaultSelectedIndex(apps)
+        applySelection()
+        focusSelectedTile()
+    }
+
     /**
      * Replaces the tiles with a new list of apps (the viewer changed the choice in Settings).
-     * The previously selected app stays selected if it is still in the list.
+     * YouTube app is focused if available, otherwise center app.
      */
     fun setApps(newApps: List<AppEntry>) {
         if (newApps.isEmpty()) return
-        val previousId = apps.getOrNull(selectedIndex)?.id
         apps = newApps
-        val kept = newApps.indexOfFirst { it.id == previousId }
-        selectedIndex = if (kept >= 0) kept else minOf(LauncherConfig.DEFAULT_SELECTED_INDEX, newApps.lastIndex)
+        selectedIndex = getDefaultSelectedIndex(newApps)
         fillRow()
         scroller.scrollTo(0, 0)
         applySelection()
@@ -167,7 +191,9 @@ class HomeScreen(
         titleView.typeface = Typeface.create("sans-serif-medium", Typeface.NORMAL)
         titleView.gravity = Gravity.CENTER
         titleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 28f)
-        selectionBinder.bind(titleView) { apps.getOrNull(selectedIndex)?.displayName() ?: "" }
+        selectionBinder.bind(titleView) {
+            if (selectedIndex >= 0 && selectedIndex < apps.size) apps[selectedIndex].displayName() else ""
+        }
         val titleParams = LinearLayout.LayoutParams(MATCH, WRAP)
         titleParams.leftMargin = context.dp(48)
         titleParams.rightMargin = context.dp(48)
@@ -178,7 +204,7 @@ class HomeScreen(
         descView.gravity = Gravity.CENTER
         descView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
         selectionBinder.bind(descView) {
-            val key: String? = apps.getOrNull(selectedIndex)?.descKey
+            val key: String? = if (selectedIndex >= 0 && selectedIndex < apps.size) apps[selectedIndex].descKey else null
             if (key != null && key.length > 0) Translator.t(key) else ""
         }
         val descParams = LinearLayout.LayoutParams(MATCH, WRAP)
@@ -225,7 +251,9 @@ class HomeScreen(
         val marginPx = context.dp(10)
         val tileWidth = Math.max(context.dp(80), slotWidth - marginPx * 2)
 
-        apps.forEachIndexed { index, entry ->
+        var index = 0
+        while (index < apps.size) {
+            val entry = apps[index]
             val tile = buildTile(index, entry)
             tile.setPointerColor(pointerColor)
             tile.setLargeText(largeText)
@@ -234,6 +262,7 @@ class HomeScreen(
             params.leftMargin = marginPx
             params.rightMargin = marginPx
             row.addView(tile, params)
+            index++
         }
     }
 
@@ -246,6 +275,8 @@ class HomeScreen(
             if (hasFocus) {
                 select(index)
                 scroller.requestChildFocus(row, tile)
+            } else {
+                applySelection()
             }
         }
         // OK button / tap opens the app.
@@ -260,7 +291,7 @@ class HomeScreen(
             } else when (keyCode) {
                 KeyEvent.KEYCODE_DPAD_LEFT ->
                     if (index == 0) {
-                        val lastTile: AppTileView? = tiles.lastOrNull()
+                        val lastTile: AppTileView? = if (tiles.size > 0) tiles[tiles.size - 1] else null
                         if (lastTile != null) {
                             lastTile.requestFocus()
                             scroller.requestChildFocus(row, lastTile)
@@ -268,8 +299,8 @@ class HomeScreen(
                         true
                     } else false
                 KeyEvent.KEYCODE_DPAD_RIGHT ->
-                    if (index == tiles.lastIndex) {
-                        val firstTile: AppTileView? = tiles.firstOrNull()
+                    if (index == tiles.size - 1) {
+                        val firstTile: AppTileView? = if (tiles.size > 0) tiles[0] else null
                         if (firstTile != null) {
                             firstTile.requestFocus()
                             scroller.requestChildFocus(row, firstTile)
@@ -288,13 +319,25 @@ class HomeScreen(
 
     /** Marks tile [index] as the selected one and updates the big title. */
     private fun select(index: Int) {
-        if (index == selectedIndex) return
         selectedIndex = index
         applySelection()
     }
 
-    private fun applySelection() {
-        tiles.forEachIndexed { i, tile -> tile.setSelectedLook(i == selectedIndex) }
+    fun applySelection() {
+        var hasTileFocus = false
+        var i = 0
+        while (i < tiles.size) {
+            if (tiles[i].hasFocus()) {
+                hasTileFocus = true
+                break
+            }
+            i++
+        }
+        i = 0
+        while (i < tiles.size) {
+            tiles[i].setSelectedLook(hasTileFocus && i == selectedIndex)
+            i++
+        }
         selectionBinder.refresh()
     }
 }

@@ -24,6 +24,7 @@ class HeaderBar(
     onNetworkClick: () -> Unit,
     onSettingsClick: () -> Unit,
     private val onMoveDown: () -> Unit,
+    private val onFocusChanged: () -> Unit = {},
 ) {
     /** The whole top strip - add this to the screen. */
     val view = FrameLayout(context)
@@ -67,6 +68,7 @@ class HeaderBar(
             Ui.shape(context, Palette.FOCUS_FILL, 16, Palette.FOCUS_RING, 2),
         )
         button.setOnClickListener { onClick() }
+        button.setOnFocusChangeListener { _, _ -> onFocusChanged() }
         moveDownOnDpadDown(button)
 
         // Round wifi icon
@@ -152,6 +154,7 @@ class HeaderBar(
             Ui.shape(context, Palette.FOCUS_FILL, 24, Palette.FOCUS_RING, 2),
         )
         button.setOnClickListener { onClick() }
+        button.setOnFocusChangeListener { _, _ -> onFocusChanged() }
         moveDownOnDpadDown(button)
 
         button.addView(

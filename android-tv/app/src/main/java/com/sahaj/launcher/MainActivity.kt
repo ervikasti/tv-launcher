@@ -62,6 +62,7 @@ class MainActivity : Activity() {
         super.onResume()
         handler.removeCallbacks(clockTicker)
         clockTicker.run()   // update now, then every minute
+        home.resetFocusToDefault()
     }
 
     override fun onPause() {
@@ -73,7 +74,7 @@ class MainActivity : Activity() {
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         currentDialog?.dismiss()
-        home.focusSelectedTile()
+        home.resetFocusToDefault()
     }
 
     /** A home screen must not be closed with BACK, so BACK does nothing here. */
@@ -111,14 +112,20 @@ class MainActivity : Activity() {
     }
 
     private fun openSettings() {
-        val dialog = SettingsDialog(this, prefs, object : SettingsDialog.Listener {
+        val settingsDialog = SettingsDialog(this, prefs, object : SettingsDialog.Listener {
             override fun onLanguageChanged() = home.onLanguageChanged()
             override fun onThemeChanged() = home.applyTheme(Themes.byId(prefs.themeId))
             override fun onLargeTextChanged() = home.applyLargeText(prefs.largeText)
             // Settings closed after the viewer picked other apps -> rebuild the home row.
             override fun onAppsChanged() = home.setApps(AppChoices.currentEntries(this@MainActivity, prefs))
         })
-        show(dialog.dialog)
+        settingsDialog.dialog.setOnDismissListener {
+            if (currentDialog == settingsDialog.dialog) {
+                currentDialog = null
+            }
+            home.focusSelectedTile()
+        }
+        show(settingsDialog.dialog)
     }
 
     /** Shows a pop-up, closing any previous one. */

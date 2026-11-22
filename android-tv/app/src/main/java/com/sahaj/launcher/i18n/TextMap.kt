@@ -32,7 +32,7 @@ object TextMap {
 
         // ===================== TOP BAR =====================
         Keys.NET_CONNECTED to mapOf(
-            HI to "इंटरनेट से जुड़े हैं",
+            HI to "इंटरनेट जुड़ा हैं",
             EN to "Internet connected",
         ),
         Keys.NET_OK to mapOf(
@@ -89,7 +89,7 @@ object TextMap {
             EN to "TV shows, sports, and movies",
         ),
         Keys.APP_JIOHOTSTAR_NAME to mapOf(
-            HI to "जियोहॉटस्टार",
+            HI to "जियो हॉटस्टार",
             EN to "JioHotstar",
         ),
         Keys.APP_JIOHOTSTAR_DESC to mapOf(
