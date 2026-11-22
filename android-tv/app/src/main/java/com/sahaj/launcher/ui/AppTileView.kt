@@ -13,6 +13,7 @@ import android.widget.TextView
 import com.sahaj.launcher.R
 import com.sahaj.launcher.config.AppEntry
 import com.sahaj.launcher.config.LauncherConfig
+import com.sahaj.launcher.config.displayName
 import com.sahaj.launcher.i18n.TextBinder
 
 /**
@@ -58,7 +59,7 @@ class AppTileView(
         labelParams.topMargin = context.dp(8)
         column.addView(label, labelParams)
         addView(column, FrameLayout.LayoutParams(MATCH, MATCH))
-        binder.bind(label, entry.nameKey)   // name follows the chosen language
+        binder.bind(label) { entry.displayName() }   // name follows the chosen language
 
         // --- Tick badge (top-right corner) ---
         badge.background = Ui.circle(Palette.BADGE)

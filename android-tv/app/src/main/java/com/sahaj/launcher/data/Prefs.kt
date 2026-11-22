@@ -25,7 +25,20 @@ class Prefs(context: Context) {
         get() = store.getBoolean(KEY_LARGE, false)
         set(value) = store.edit().putBoolean(KEY_LARGE, value).apply()
 
+    /**
+     * The apps chosen for the home row, in order (see AppChoices for the key format).
+     * null = the viewer never chose, so the default list is used.
+     */
+    var appKeys: List<String>?
+        get() = store.getString(KEY_APPS, null)?.split(",")?.filter { it.isNotEmpty() }
+        set(value) {
+            val editor = store.edit()
+            if (value == null) editor.remove(KEY_APPS) else editor.putString(KEY_APPS, value.joinToString(","))
+            editor.apply()
+        }
+
     private companion object {
+        const val KEY_APPS = "apps"
         const val KEY_LANGUAGE = "language"
         const val KEY_THEME = "theme"
         const val KEY_LARGE = "large_text"

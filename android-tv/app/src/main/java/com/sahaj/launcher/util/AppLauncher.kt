@@ -7,6 +7,14 @@ import com.sahaj.launcher.config.AppEntry
 /** Opens other apps installed on the TV. */
 object AppLauncher {
 
+    /** True when at least one of the entry's packages can be opened on this TV. */
+    fun isInstalled(context: Context, entry: AppEntry): Boolean {
+        val pm = context.packageManager
+        return entry.packages.any { pkg ->
+            pm.getLeanbackLaunchIntentForPackage(pkg) != null || pm.getLaunchIntentForPackage(pkg) != null
+        }
+    }
+
     /**
      * Tries each package name of [entry] in order and opens the first one that is installed.
      * Returns false if none of them is installed (the caller then shows a message).

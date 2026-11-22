@@ -14,6 +14,9 @@ object LauncherConfig {
      */
     const val ANIMATION_MS = 120L
 
+    /** Most apps that can be shown on the home row (the row scrolls sideways after 5). */
+    const val MAX_APPS = 12
+
     /** Height of each app tile. */
     const val TILE_HEIGHT_DP = 150
 

@@ -50,6 +50,13 @@ object Keys {
     const val THEME_SAGE = "theme_sage"
     const val THEME_SKY = "theme_sky"
     const val THEME_SAND = "theme_sand"
+    // ---- Settings: "Choose apps" tab ----
+    const val TAB_APPS = "tab_apps"
+    const val APPS_HINT = "apps_hint"
+    const val APPS_COUNT = "apps_count"             // contains two %d = chosen / maximum
+    const val APPS_RESET = "apps_reset"
+    const val APPS_NOT_INSTALLED = "apps_not_installed"
+    const val APP_GENERIC_DESC = "app_generic_desc" // description under apps the viewer picked
     const val LANGUAGE_LABEL = "language_label"
     const val LANG_HINDI = "lang_hindi"
     const val LANG_ENGLISH = "lang_english"

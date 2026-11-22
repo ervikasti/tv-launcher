@@ -24,6 +24,14 @@ object LogoView {
             box.addView(image, LinearLayout.LayoutParams(WRAP, WRAP))
         }
 
+        // The app's own icon (for apps the viewer picked in Settings)
+        logo.drawable?.let { icon ->
+            val image = ImageView(context)
+            image.setImageDrawable(icon)
+            image.scaleType = ImageView.ScaleType.FIT_CENTER
+            box.addView(image, LinearLayout.LayoutParams(context.dp(56), context.dp(56)))
+        }
+
         // Text part (if any), e.g. the big "N" of Netflix
         logo.wordmark?.let { word ->
             val text = TextView(context)

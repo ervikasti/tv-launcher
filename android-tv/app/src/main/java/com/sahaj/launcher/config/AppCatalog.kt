@@ -1,16 +1,20 @@
 package com.sahaj.launcher.config
 
 import android.graphics.Color
+import android.graphics.drawable.Drawable
 import com.sahaj.launcher.R
 import com.sahaj.launcher.i18n.Keys
+import com.sahaj.launcher.i18n.Translator
 
 /**
  * How the logo inside a tile is drawn.
  *  - drawableRes : a picture from res/drawable (optional)
+ *  - drawable    : a ready picture, e.g. the app's own icon from the TV (optional)
  *  - wordmark    : plain text drawn as logo, e.g. the big "N" of Netflix (optional)
  */
 data class Logo(
     val drawableRes: Int? = null,
+    val drawable: Drawable? = null,
     val wordmark: String? = null,
     val wordmarkColor: Int = Color.BLACK,
     val wordmarkSizeSp: Float = 16f,
@@ -23,6 +27,8 @@ data class Logo(
  *  - packages          : Android package names to try, in order. The first one
  *                        installed on the TV is opened.
  *  - tileColor/inkColor: tile background and logo/label colour
+ *  - label             : name used as-is (only for apps the viewer picked in Settings;
+ *                        built-in tiles leave it empty and use nameKey instead)
  */
 data class AppEntry(
     val id: String,
@@ -32,10 +38,16 @@ data class AppEntry(
     val tileColor: Int,
     val inkColor: Int,
     val logo: Logo,
+    val label: String? = null,
 )
 
+/** The name to show for this app, in the current language. */
+fun AppEntry.displayName(): String = label ?: Translator.t(nameKey)
+
 /**
- * THE LIST OF TILES ON THE HOME SCREEN (left to right).
+ * THE DEFAULT LIST OF TILES ON THE HOME SCREEN (left to right).
+ * The viewer can change which apps are shown from Settings -> "Choose apps";
+ * this list is what is shown until they do, and what "Restore default apps" brings back.
  *
  * To reorder: move a block up/down.   To remove: delete a block.
  * To fix an app that does not open: correct its package name in `packages`.

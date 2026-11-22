@@ -8,6 +8,8 @@ import android.os.Handler
 import android.os.Looper
 import com.sahaj.launcher.config.AppEntry
 import com.sahaj.launcher.config.Themes
+import com.sahaj.launcher.config.displayName
+import com.sahaj.launcher.data.AppChoices
 import com.sahaj.launcher.data.Prefs
 import com.sahaj.launcher.i18n.Keys
 import com.sahaj.launcher.i18n.Translator
@@ -43,7 +45,7 @@ class MainActivity : Activity() {
         prefs = Prefs(this)
         Translator.language = prefs.language
 
-        home = HomeScreen(this, object : HomeScreen.Callbacks {
+        home = HomeScreen(this, AppChoices.currentEntries(this, prefs), object : HomeScreen.Callbacks {
             override fun onOpenNetwork() = openNetwork()
             override fun onOpenSettings() = openSettings()
             override fun onLaunch(entry: AppEntry) = launchApp(entry)
@@ -89,7 +91,7 @@ class MainActivity : Activity() {
             MessageDialog(
                 this,
                 Themes.byId(prefs.themeId),
-                Translator.t(entry.nameKey),
+                entry.displayName(),
                 Translator.t(Keys.NOT_INSTALLED_BODY),
                 entry,
             ).dialog,
@@ -113,6 +115,8 @@ class MainActivity : Activity() {
             override fun onLanguageChanged() = home.onLanguageChanged()
             override fun onThemeChanged() = home.applyTheme(Themes.byId(prefs.themeId))
             override fun onLargeTextChanged() = home.applyLargeText(prefs.largeText)
+            // Settings closed after the viewer picked other apps -> rebuild the home row.
+            override fun onAppsChanged() = home.setApps(AppChoices.currentEntries(this@MainActivity, prefs))
         })
         show(dialog.dialog)
     }

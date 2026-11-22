@@ -40,7 +40,9 @@ All code is in `app/src/main/java/com/sahaj/launcher/`
 | `i18n/TextMap.kt`      | **Every on-screen text, Hindi ↔ English side by side. Edit wording here.** |
 | `i18n/TextKeys.kt`     | Names of the texts (only touch when adding a new text)      |
 | `i18n/Translator.kt`   | Picks the right language; also where new languages are registered |
-| `config/AppCatalog.kt` | The app tiles: order, colours, logos, **package names**     |
+| `config/AppCatalog.kt` | The DEFAULT app tiles: order, colours, logos, **package names** |
+| `data/AppChoices.kt`   | Lists installed apps and turns the viewer's choice into tiles |
+| `data/Prefs.kt`        | Saved choices (language, theme, large text, chosen apps)    |
 | `config/Themes.kt`     | The 4 colour themes                                         |
 | `config/LauncherConfig.kt` | Simple knobs: starting tile, animation on/off, sizes   |
 | `ui/HomeScreen.kt`     | Main screen layout                                          |
@@ -57,6 +59,15 @@ Examples:
   (find it with `adb shell pm list packages | grep <name>`). Several names can be listed;
   the first installed one is used.
 - **Very slow TV:** set `ANIMATION_MS = 0` in `LauncherConfig.kt`.
+
+## Choosing which apps appear on the home row
+
+Open **Settings → Choose apps** (third tab). The list shows the built-in tiles first, then every
+other app installed on the TV. Press OK on a line to add or remove it (a tick means it is on the home row).
+- At least 1 and at most 12 apps (`MAX_APPS` in `LauncherConfig.kt`); with more than 5 the row scrolls sideways.
+- Apps appear in the order they were added. **Restore default apps** brings back the list from `AppCatalog.kt`.
+- The home row updates when you close Settings. The choice is saved on the TV.
+- Wording of this tab: `i18n/TextMap.kt` (keys starting `APPS_` / `TAB_APPS`).
 
 ## Remote control
 

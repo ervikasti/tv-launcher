@@ -169,6 +169,33 @@ object TextMap {
             HI to "नरम सुनहरा",
             EN to "Soft Sand",
         ),
+        // ---- "Choose apps" tab ----
+        Keys.TAB_APPS to mapOf(
+            HI to "ऐप्स चुनें",
+            EN to "Choose apps",
+        ),
+        Keys.APPS_HINT to mapOf(
+            HI to "होम स्क्रीन पर दिखाने वाले ऐप चुनें।",
+            EN to "Choose the apps to show on the home screen.",
+        ),
+        // The two %d are replaced by numbers (chosen, maximum) - keep both, in this order.
+        Keys.APPS_COUNT to mapOf(
+            HI to "चुने गए ऐप: %d / %d",
+            EN to "Apps chosen: %d / %d",
+        ),
+        Keys.APPS_RESET to mapOf(
+            HI to "शुरुआती ऐप वापस लाएँ",
+            EN to "Restore default apps",
+        ),
+        Keys.APPS_NOT_INSTALLED to mapOf(
+            HI to "इंस्टॉल नहीं है",
+            EN to "not installed",
+        ),
+        Keys.APP_GENERIC_DESC to mapOf(
+            HI to "इस ऐप को खोलें",
+            EN to "Open this app",
+        ),
+
         Keys.LANGUAGE_LABEL to mapOf(
             HI to "भाषा / Language",
             EN to "Language / भाषा",
