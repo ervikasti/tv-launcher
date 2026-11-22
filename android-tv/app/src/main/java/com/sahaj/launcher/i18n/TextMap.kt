@@ -196,6 +196,36 @@ object TextMap {
             EN to "Open this app",
         ),
 
+        // ---- "TV Settings" tab ----
+        Keys.TAB_TV_SETTINGS to mapOf(
+            HI to "टीवी सेटिंग्स",
+            EN to "TV Settings",
+        ),
+        Keys.TV_SETTINGS_HINT to mapOf(
+            HI to "वाई-फ़ाई, डिस्प्ले, साउंड और डिवाइस की मुख्य सेटिंग्स खोलें।",
+            EN to "Open your TV's system settings for Wi-Fi, display, sound, and device options.",
+        ),
+        Keys.TV_SETTINGS_OPEN_ALL to mapOf(
+            HI to "मुख्य टीवी सेटिंग्स खोलें",
+            EN to "Open TV System Settings",
+        ),
+        Keys.TV_SETTINGS_OPEN_WIFI to mapOf(
+            HI to "वाई-फ़ाई और नेटवर्क सेटिंग्स",
+            EN to "Wi-Fi & Network Settings",
+        ),
+        Keys.TV_SETTINGS_OPEN_DISPLAY to mapOf(
+            HI to "डिस्प्ले और ध्वनि सेटिंग्स",
+            EN to "Display & Sound Settings",
+        ),
+        Keys.TV_SETTINGS_OPEN_APPS to mapOf(
+            HI to "ऐप्स और अनुमतियाँ",
+            EN to "Apps & Permissions",
+        ),
+        Keys.TV_SETTINGS_OPEN_DEVICE to mapOf(
+            HI to "डिवाइस और समय सेटिंग्स",
+            EN to "Device Preferences & Time",
+        ),
+
         Keys.LANGUAGE_LABEL to mapOf(
             HI to "भाषा / Language",
             EN to "Language / भाषा",

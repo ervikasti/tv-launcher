@@ -2,7 +2,9 @@ package com.sahaj.launcher.ui
 
 import android.app.Dialog
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
+import android.provider.Settings
 import android.view.Gravity
 import android.view.View
 import android.widget.FrameLayout
@@ -25,10 +27,11 @@ import com.sahaj.launcher.i18n.Translator
 import com.sahaj.launcher.util.AppLauncher
 
 /**
- * The Settings pop-up with three tabs:
+ * The Settings pop-up with four tabs:
  *   1. "Look & feel"      - choose a colour theme
  *   2. "Language & text"  - choose Hindi / English and larger labels
  *   3. "Choose apps"      - choose which apps appear on the home row
+ *   4. "TV Settings"      - open default TV system settings
  * Changes apply immediately and are saved through [Prefs].
  */
 class SettingsDialog(
@@ -63,9 +66,11 @@ class SettingsDialog(
     private lateinit var tabTheme: TextView
     private lateinit var tabGeneral: TextView
     private lateinit var tabApps: TextView
+    private lateinit var tabTvSettings: TextView
     private lateinit var themePanel: View
     private lateinit var generalPanel: View
     private lateinit var appsPanel: LinearLayout
+    private lateinit var tvSettingsPanel: View
     private lateinit var toggleTrack: LinearLayout
     private lateinit var tabTrack: LinearLayout
     private var currentTab = TAB_THEME
@@ -112,9 +117,11 @@ class SettingsDialog(
         generalPanel = buildGeneralPanel()
         appsPanel = LinearLayout(context)          // filled later, when the tab is opened
         appsPanel.orientation = LinearLayout.VERTICAL
+        tvSettingsPanel = buildTvSettingsPanel()
         column.addView(themePanel, marginTop(16))
         column.addView(generalPanel, marginTop(16))
         column.addView(appsPanel, marginTop(16))
+        column.addView(tvSettingsPanel, marginTop(16))
 
         val note = Ui.text(context, 12f, Palette.TEXT_MUTED)
         binder.bind(note, Keys.PREFS_SAVED)
@@ -153,7 +160,7 @@ class SettingsDialog(
         return row
     }
 
-    /** The three tab buttons. */
+    /** The four tab buttons. */
     private fun buildTabs(): View {
         tabTrack = LinearLayout(context)
         tabTrack.orientation = LinearLayout.HORIZONTAL
@@ -163,8 +170,9 @@ class SettingsDialog(
         tabTheme = buildTab(Keys.TAB_THEME) { currentTab = TAB_THEME; updateTabs() }
         tabGeneral = buildTab(Keys.TAB_GENERAL) { currentTab = TAB_GENERAL; updateTabs() }
         tabApps = buildTab(Keys.TAB_APPS) { currentTab = TAB_APPS; updateTabs() }
+        tabTvSettings = buildTab(Keys.TAB_TV_SETTINGS) { currentTab = TAB_TV_SETTINGS; updateTabs() }
 
-        for (tab in listOf(tabTheme, tabGeneral, tabApps)) {
+        for (tab in listOf(tabTheme, tabGeneral, tabApps, tabTvSettings)) {
             val params = LinearLayout.LayoutParams(0, context.dp(44), 1f)
             params.leftMargin = context.dp(3)
             params.rightMargin = context.dp(3)
@@ -174,7 +182,7 @@ class SettingsDialog(
     }
 
     private fun buildTab(key: String, onClick: () -> Unit): TextView {
-        val tab = Ui.text(context, 13f, Palette.TAB_TEXT, medium = true)
+        val tab = Ui.text(context, 12f, Palette.TAB_TEXT, medium = true)
         tab.gravity = Gravity.CENTER
         Ui.makeFocusable(tab)
         binder.bind(tab, key)
@@ -483,6 +491,109 @@ class SettingsDialog(
         countView.text = countText()
     }
 
+    // ------------------------------------------------------ tv settings panel
+
+    private fun buildTvSettingsPanel(): View {
+        val panel = LinearLayout(context)
+        panel.orientation = LinearLayout.VERTICAL
+
+        val hint = Ui.text(context, 13f, Palette.TEXT_MUTED)
+        binder.bind(hint, Keys.TV_SETTINGS_HINT)
+        panel.addView(hint, LinearLayout.LayoutParams(MATCH, WRAP))
+
+        val mainBtn = buildTvSettingButton(
+            textKey = Keys.TV_SETTINGS_OPEN_ALL,
+            iconRes = R.drawable.ic_settings,
+            isPrimary = true,
+        ) {
+            launchSystemSettings(listOf(Settings.ACTION_SETTINGS))
+        }
+        panel.addView(mainBtn, marginTop(12))
+
+        val wifiBtn = buildTvSettingButton(
+            textKey = Keys.TV_SETTINGS_OPEN_WIFI,
+            iconRes = R.drawable.ic_wifi,
+        ) {
+            launchSystemSettings(listOf(Settings.ACTION_WIFI_SETTINGS, Settings.ACTION_WIRELESS_SETTINGS, Settings.ACTION_SETTINGS))
+        }
+        panel.addView(wifiBtn, marginTop(8))
+
+        val displayBtn = buildTvSettingButton(
+            textKey = Keys.TV_SETTINGS_OPEN_DISPLAY,
+            iconRes = R.drawable.ic_settings,
+        ) {
+            launchSystemSettings(listOf(Settings.ACTION_DISPLAY_SETTINGS, Settings.ACTION_SOUND_SETTINGS, Settings.ACTION_SETTINGS))
+        }
+        panel.addView(displayBtn, marginTop(8))
+
+        val appsBtn = buildTvSettingButton(
+            textKey = Keys.TV_SETTINGS_OPEN_APPS,
+            iconRes = R.drawable.ic_settings,
+        ) {
+            launchSystemSettings(listOf(Settings.ACTION_APPLICATION_SETTINGS, Settings.ACTION_MANAGE_APPLICATIONS_SETTINGS, Settings.ACTION_SETTINGS))
+        }
+        panel.addView(appsBtn, marginTop(8))
+
+        val deviceBtn = buildTvSettingButton(
+            textKey = Keys.TV_SETTINGS_OPEN_DEVICE,
+            iconRes = R.drawable.ic_settings,
+        ) {
+            launchSystemSettings(listOf(Settings.ACTION_DEVICE_INFO_SETTINGS, Settings.ACTION_DATE_SETTINGS, Settings.ACTION_SETTINGS))
+        }
+        panel.addView(deviceBtn, marginTop(8))
+
+        return panel
+    }
+
+    private fun buildTvSettingButton(
+        textKey: String,
+        iconRes: Int,
+        isPrimary: Boolean = false,
+        onClick: () -> Unit,
+    ): View {
+        val button = LinearLayout(context)
+        button.orientation = LinearLayout.HORIZONTAL
+        button.gravity = Gravity.CENTER_VERTICAL
+        button.setPadding(context.dp(18), context.dp(12), context.dp(18), context.dp(12))
+        button.minimumHeight = context.dp(48)
+        Ui.makeFocusable(button)
+
+        val fill = if (isPrimary) Palette.CHOICE_SELECTED_FILL else Palette.TOGGLE_ROW
+        val border = if (isPrimary) Palette.CHOICE_SELECTED_BORDER else Color.TRANSPARENT
+
+        button.background = Ui.focusStates(
+            Ui.shape(context, fill, 16, border, if (isPrimary) 1 else 0),
+            Ui.shape(context, fill, 16, Palette.FOCUS_RING, 3),
+        )
+
+        button.addView(
+            Ui.icon(context, iconRes, Palette.TEXT),
+            LinearLayout.LayoutParams(context.dp(20), context.dp(20)),
+        )
+
+        val text = Ui.text(context, 15f, Palette.TEXT, medium = isPrimary)
+        binder.bind(text, textKey)
+        val textParams = LinearLayout.LayoutParams(0, WRAP, 1f)
+        textParams.leftMargin = context.dp(12)
+        button.addView(text, textParams)
+
+        button.setOnClickListener { onClick() }
+        return button
+    }
+
+    private fun launchSystemSettings(actions: List<String>) {
+        for (action in actions) {
+            try {
+                val intent = Intent(action).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                context.startActivity(intent)
+                dialog.dismiss()
+                return
+            } catch (_: Exception) {
+                // Try next action
+            }
+        }
+    }
+
     // -------------------------------------------------------------- helpers
 
     /** Border/fill used by language buttons and app lines (chosen = green tint). */
@@ -500,6 +611,7 @@ class SettingsDialog(
         themePanel.visibility = if (currentTab == TAB_THEME) View.VISIBLE else View.GONE
         generalPanel.visibility = if (currentTab == TAB_GENERAL) View.VISIBLE else View.GONE
         appsPanel.visibility = if (currentTab == TAB_APPS) View.VISIBLE else View.GONE
+        tvSettingsPanel.visibility = if (currentTab == TAB_TV_SETTINGS) View.VISIBLE else View.GONE
         if (currentTab == TAB_APPS && !appsBuilt) {
             appsBuilt = true
             fillAppsPanel()
@@ -507,6 +619,7 @@ class SettingsDialog(
         styleTab(tabTheme, currentTab == TAB_THEME)
         styleTab(tabGeneral, currentTab == TAB_GENERAL)
         styleTab(tabApps, currentTab == TAB_APPS)
+        styleTab(tabTvSettings, currentTab == TAB_TV_SETTINGS)
     }
 
     private fun styleTab(tab: TextView, active: Boolean) {
@@ -528,5 +641,6 @@ class SettingsDialog(
         const val TAB_THEME = 0
         const val TAB_GENERAL = 1
         const val TAB_APPS = 2
+        const val TAB_TV_SETTINGS = 3
     }
 }

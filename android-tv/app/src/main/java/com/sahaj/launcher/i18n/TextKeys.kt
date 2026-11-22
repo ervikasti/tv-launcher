@@ -57,6 +57,14 @@ object Keys {
     const val APPS_RESET = "apps_reset"
     const val APPS_NOT_INSTALLED = "apps_not_installed"
     const val APP_GENERIC_DESC = "app_generic_desc" // description under apps the viewer picked
+    // ---- Settings: "TV Settings" tab ----
+    const val TAB_TV_SETTINGS = "tab_tv_settings"
+    const val TV_SETTINGS_HINT = "tv_settings_hint"
+    const val TV_SETTINGS_OPEN_ALL = "tv_settings_open_all"
+    const val TV_SETTINGS_OPEN_WIFI = "tv_settings_open_wifi"
+    const val TV_SETTINGS_OPEN_DISPLAY = "tv_settings_open_display"
+    const val TV_SETTINGS_OPEN_APPS = "tv_settings_open_apps"
+    const val TV_SETTINGS_OPEN_DEVICE = "tv_settings_open_device"
     const val LANGUAGE_LABEL = "language_label"
     const val LANG_HINDI = "lang_hindi"
     const val LANG_ENGLISH = "lang_english"

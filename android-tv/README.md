@@ -48,7 +48,7 @@ All code is in `app/src/main/java/com/sahaj/launcher/`
 | `ui/HomeScreen.kt`     | Main screen layout                                          |
 | `ui/HeaderBar.kt`      | Top strip: internet status, clock, settings button          |
 | `ui/AppTileView.kt`    | One app tile                                                |
-| `ui/SettingsDialog.kt` | Settings pop-up (theme, language, large text)               |
+| `ui/SettingsDialog.kt` | Settings pop-up (theme, language, large text, TV default settings) |
 | `ui/MessageDialog.kt`  | "App not installed" / info pop-up                           |
 | `util/`                | Opening apps, internet check, clock text                    |
 | `res/drawable/`        | Icons and app logos (vector files)                          |
