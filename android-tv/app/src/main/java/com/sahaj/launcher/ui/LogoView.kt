@@ -32,7 +32,7 @@ object LogoView {
             box.addView(image, LinearLayout.LayoutParams(context.dp(50), context.dp(50)))
         }
 
-        // Text part (if any), e.g. the big "N" of Netflix
+        // Text part (if any), e.g. "Sony LIV"
         logo.wordmark?.let { word ->
             val text = TextView(context)
             text.text = word

@@ -80,21 +80,13 @@ object TextMap {
             HI to "अपनी पसंद के वीडियो देखें",
             EN to "Watch something you love",
         ),
-        Keys.APP_NETFLIX_NAME to mapOf(
-            HI to "नेटफ्लिक्स",
-            EN to "Netflix",
+        Keys.APP_SONY_NAME to mapOf(
+            HI to "सोनी लिव",
+            EN to "Sony LIV",
         ),
-        Keys.APP_NETFLIX_DESC to mapOf(
-            HI to "फ़िल्मों और कहानियों की दुनिया",
-            EN to "A world of films and stories",
-        ),
-        Keys.APP_LIVETV_NAME to mapOf(
-            HI to "लाइव टीवी",
-            EN to "Live TV",
-        ),
-        Keys.APP_LIVETV_DESC to mapOf(
-            HI to "आपके पसंदीदा चैनल, एक जगह",
-            EN to "Your favourite channels, all together",
+        Keys.APP_SONY_DESC to mapOf(
+            HI to "टीवी शो, खेल और फ़िल्में",
+            EN to "TV shows, sports, and movies",
         ),
         Keys.APP_JIOHOTSTAR_NAME to mapOf(
             HI to "जियोहॉटस्टार",
@@ -103,14 +95,6 @@ object TextMap {
         Keys.APP_JIOHOTSTAR_DESC to mapOf(
             HI to "खेल, फ़िल्में और बहुत कुछ",
             EN to "Sports, movies, and a little more",
-        ),
-        Keys.APP_MUSIC_NAME to mapOf(
-            HI to "संगीत",
-            EN to "Music",
-        ),
-        Keys.APP_MUSIC_DESC to mapOf(
-            HI to "हर पल के लिए एक धुन",
-            EN to "A melody for every moment",
         ),
 
         // ===================== POP-UPS =====================

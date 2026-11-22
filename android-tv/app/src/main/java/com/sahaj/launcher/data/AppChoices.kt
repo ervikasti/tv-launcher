@@ -11,7 +11,7 @@ import com.sahaj.launcher.i18n.Keys
 /** One line in the "Choose apps" list of Settings. */
 class Choice(
     val key: String,        // what is saved (see AppChoices)
-    val entry: AppEntry?,   // set for the built-in tiles (YouTube, Netflix...)
+    val entry: AppEntry?,   // set for the built-in tiles (YouTube, Sony...)
     val label: String?,     // set for any other app installed on the TV
 )
 
@@ -19,7 +19,7 @@ class Choice(
  * Works out WHICH apps appear on the home row.
  *
  * Every app has a "key" that is saved in Prefs:
- *   - built-in tile  -> its id from AppCatalog, e.g. "netflix"
+ *   - built-in tile  -> its id from AppCatalog, e.g. "sony"
  *   - any other app  -> "pkg:" + its package name, e.g. "pkg:com.spotify.tv.android"
  */
 object AppChoices {

@@ -25,14 +25,10 @@ object Keys {
     // ---- App tiles: name + one-line description ----
     const val APP_YOUTUBE_NAME = "app_youtube_name"
     const val APP_YOUTUBE_DESC = "app_youtube_desc"
-    const val APP_NETFLIX_NAME = "app_netflix_name"
-    const val APP_NETFLIX_DESC = "app_netflix_desc"
-    const val APP_LIVETV_NAME = "app_livetv_name"
-    const val APP_LIVETV_DESC = "app_livetv_desc"
+    const val APP_SONY_NAME = "app_sony_name"
+    const val APP_SONY_DESC = "app_sony_desc"
     const val APP_JIOHOTSTAR_NAME = "app_jiohotstar_name"
     const val APP_JIOHOTSTAR_DESC = "app_jiohotstar_desc"
-    const val APP_MUSIC_NAME = "app_music_name"
-    const val APP_MUSIC_DESC = "app_music_desc"
 
     // ---- Pop-ups: app not installed / network info ----
     const val NOT_INSTALLED_BODY = "not_installed_body"

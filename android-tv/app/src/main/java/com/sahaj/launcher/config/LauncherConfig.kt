@@ -5,8 +5,8 @@ package com.sahaj.launcher.config
  * (All sizes are in "dp", the TV-independent size unit.)
  */
 object LauncherConfig {
-    /** Which app tile is selected when the launcher opens (0 = first). 2 = Live TV. */
-    const val DEFAULT_SELECTED_INDEX = 2
+    /** Which app tile is selected when the launcher opens (0 = first). */
+    const val DEFAULT_SELECTED_INDEX = 0
 
     /**
      * Length of the tile "grow" animation in milliseconds.

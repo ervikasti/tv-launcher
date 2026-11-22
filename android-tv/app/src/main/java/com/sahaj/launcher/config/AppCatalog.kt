@@ -10,7 +10,7 @@ import com.sahaj.launcher.i18n.Translator
  * How the logo inside a tile is drawn.
  *  - drawableRes : a picture from res/drawable (optional)
  *  - drawable    : a ready picture, e.g. the app's own icon from the TV (optional)
- *  - wordmark    : plain text drawn as logo, e.g. the big "N" of Netflix (optional)
+ *  - wordmark    : plain text drawn as logo, e.g. "Sony LIV" (optional)
  */
 data class Logo(
     val drawableRes: Int? = null,
@@ -51,7 +51,7 @@ fun AppEntry.displayName(): String = label ?: Translator.t(nameKey)
  *
  * To reorder: move a block up/down.   To remove: delete a block.
  * To fix an app that does not open: correct its package name in `packages`.
- *   (Find a package name on your TV with:  adb shell pm list packages | grep netflix)
+ *   (Find a package name on your TV with:  adb shell pm list packages | grep sonyliv)
  * Package names below are the usual Android TV ones - please verify on your TV.
  */
 object AppCatalog {
@@ -66,28 +66,18 @@ object AppCatalog {
             logo = Logo(drawableRes = R.drawable.logo_youtube),
         ),
         AppEntry(
-            id = "netflix",
-            nameKey = Keys.APP_NETFLIX_NAME,
-            descKey = Keys.APP_NETFLIX_DESC,
-            packages = listOf("com.netflix.ninja"),
-            tileColor = Color.parseColor("#eee9e3"),
-            inkColor = Color.parseColor("#bd2636"),
+            id = "sony",
+            nameKey = Keys.APP_SONY_NAME,
+            descKey = Keys.APP_SONY_DESC,
+            packages = listOf("com.sonyliv", "com.sony.liv", "com.sonyliv.tv", "com.sony.dtv.sonyliv"),
+            tileColor = Color.parseColor("#edf2fa"),
+            inkColor = Color.parseColor("#1e3a8a"),
             logo = Logo(
-                wordmark = "N",
-                wordmarkColor = Color.parseColor("#bd2636"),
-                wordmarkSizeSp = 52f,
+                wordmark = "Sony LIV",
+                wordmarkColor = Color.parseColor("#1e293b"),
+                wordmarkSizeSp = 24f,
                 wordmarkFont = "sans-serif-black",
             ),
-        ),
-        AppEntry(
-            id = "livetv",
-            nameKey = Keys.APP_LIVETV_NAME,
-            descKey = Keys.APP_LIVETV_DESC,
-            // Live TV differs per TV brand. Add your TV's live-TV package here if it does not open.
-            packages = listOf("com.google.android.tv", "com.mitv.livetv", "com.sony.dtv.tvx"),
-            tileColor = Color.parseColor("#e0e8d9"),
-            inkColor = Color.parseColor("#496145"),
-            logo = Logo(drawableRes = R.drawable.logo_livetv),
         ),
         AppEntry(
             id = "jiohotstar",
@@ -103,15 +93,6 @@ object AppCatalog {
                 wordmarkSizeSp = 15f,
                 wordmarkFont = "sans-serif-medium",
             ),
-        ),
-        AppEntry(
-            id = "music",
-            nameKey = Keys.APP_MUSIC_NAME,
-            descKey = Keys.APP_MUSIC_DESC,
-            packages = listOf("com.google.android.youtube.tvmusic", "com.spotify.tv.android"),
-            tileColor = Color.parseColor("#f1e5d6"),
-            inkColor = Color.parseColor("#87613e"),
-            logo = Logo(drawableRes = R.drawable.logo_music),
         ),
     )
 }
