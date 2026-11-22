@@ -55,6 +55,7 @@ class AppTileView(
         label.gravity = Gravity.CENTER
         label.maxLines = 1
         label.ellipsize = TextUtils.TruncateAt.END
+        label.setPadding(context.dp(8), 0, context.dp(8), 0)
         val labelParams = LinearLayout.LayoutParams(MATCH, WRAP)
         labelParams.topMargin = context.dp(8)
         column.addView(label, labelParams)

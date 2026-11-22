@@ -129,7 +129,11 @@ class HomeScreen(
 
     /** Moves the remote's focus to the currently selected app tile. */
     fun focusSelectedTile() {
-        tiles.getOrNull(selectedIndex)?.requestFocus()
+        val target: View? = tiles.getOrNull(selectedIndex) ?: tiles.firstOrNull()
+        if (target != null) {
+            target.requestFocus()
+            scroller.requestChildFocus(row, target)
+        }
     }
 
     /**
@@ -156,23 +160,31 @@ class HomeScreen(
         center.gravity = Gravity.CENTER
         center.clipChildren = false
         center.clipToPadding = false
-        center.setPadding(context.dp(48), context.dp(8), context.dp(48), context.dp(8))
+        center.setPadding(0, context.dp(8), 0, context.dp(8))
 
         // Title: name of the selected app
         titleView.setTextColor(Palette.TEXT)
         titleView.typeface = Typeface.create("sans-serif-medium", Typeface.NORMAL)
         titleView.gravity = Gravity.CENTER
         titleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 28f)
-        selectionBinder.bind(titleView) { apps[selectedIndex].displayName() }
-        center.addView(titleView, LinearLayout.LayoutParams(MATCH, WRAP))
+        selectionBinder.bind(titleView) { apps.getOrNull(selectedIndex)?.displayName() ?: "" }
+        val titleParams = LinearLayout.LayoutParams(MATCH, WRAP)
+        titleParams.leftMargin = context.dp(48)
+        titleParams.rightMargin = context.dp(48)
+        center.addView(titleView, titleParams)
 
         // Description of the selected app
         descView.setTextColor(Palette.TEXT_SOFT)
         descView.gravity = Gravity.CENTER
         descView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
-        selectionBinder.bind(descView) { Translator.t(apps[selectedIndex].descKey) }
+        selectionBinder.bind(descView) {
+            val key: String? = apps.getOrNull(selectedIndex)?.descKey
+            if (key != null && key.length > 0) Translator.t(key) else ""
+        }
         val descParams = LinearLayout.LayoutParams(MATCH, WRAP)
         descParams.topMargin = context.dp(4)
+        descParams.leftMargin = context.dp(48)
+        descParams.rightMargin = context.dp(48)
         center.addView(descView, descParams)
 
         // The row of tiles sits inside a sideways scroller (needed when more than 5 apps are chosen).
@@ -181,21 +193,20 @@ class HomeScreen(
         scroller.isHorizontalScrollBarEnabled = false
         scroller.overScrollMode = View.OVER_SCROLL_NEVER
         scroller.isFillViewport = true
+        scroller.clipChildren = false                // prevents clipping of grown tiles & pointer button
         scroller.clipToPadding = false
         scroller.setPadding(context.dp(38), 0, context.dp(38), 0)
 
         row.orientation = LinearLayout.HORIZONTAL
         row.gravity = Gravity.CENTER_HORIZONTAL
-        row.clipChildren = false
+        row.clipChildren = false                     // prevents clipping of grown tiles & pointer button
+        row.clipToPadding = false
         // Top space: room for the grown tile. Bottom space: room for the round "press OK" button.
         row.setPadding(0, context.dp(14), 0, context.dp(76))
         scroller.addView(row, FrameLayout.LayoutParams(WRAP, WRAP))
 
-        // Screen-wide scroller: cancel the centre's side padding so tiles can reach the screen edge.
         val scrollerParams = LinearLayout.LayoutParams(MATCH, WRAP)
         scrollerParams.topMargin = context.dp(10)
-        scrollerParams.leftMargin = -context.dp(48)
-        scrollerParams.rightMargin = -context.dp(48)
         center.addView(scroller, scrollerParams)
         return center
     }
@@ -206,9 +217,13 @@ class HomeScreen(
         tiles.clear()
         tileBinder = TextBinder()   // drop the text rules of the old tiles
 
-        // Every tile has the same width: one fifth of the usable screen width.
-        val slot = (context.resources.displayMetrics.widthPixels - 2 * context.dp(48)) / 5
-        val tileWidth = slot - 2 * context.dp(10)
+        // Usable width on screen inside scroller (subtracting 38dp side padding from screen width)
+        val displayWidth = context.resources.displayMetrics.widthPixels
+        val sidePaddingPx = context.dp(38) * 2
+        val usableWidth = Math.max(1, displayWidth - sidePaddingPx)
+        val slotWidth = usableWidth / 5
+        val marginPx = context.dp(10)
+        val tileWidth = Math.max(context.dp(80), slotWidth - marginPx * 2)
 
         apps.forEachIndexed { index, entry ->
             val tile = buildTile(index, entry)
@@ -216,8 +231,8 @@ class HomeScreen(
             tile.setLargeText(largeText)
             tiles.add(tile)
             val params = LinearLayout.LayoutParams(tileWidth, context.dp(LauncherConfig.TILE_HEIGHT_DP))
-            params.leftMargin = context.dp(10)
-            params.rightMargin = context.dp(10)
+            params.leftMargin = marginPx
+            params.rightMargin = marginPx
             row.addView(tile, params)
         }
     }
@@ -226,8 +241,13 @@ class HomeScreen(
     private fun buildTile(index: Int, entry: AppEntry): AppTileView {
         val tile = AppTileView(context, entry, tileBinder)
 
-        // Moving the cursor onto a tile selects it.
-        tile.setOnFocusChangeListener { _, hasFocus -> if (hasFocus) select(index) }
+        // Moving the cursor onto a tile selects it and brings it into view inside the scroller.
+        tile.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                select(index)
+                scroller.requestChildFocus(row, tile)
+            }
+        }
         // OK button / tap opens the app.
         tile.setOnClickListener {
             select(index)
@@ -239,9 +259,23 @@ class HomeScreen(
                 false
             } else when (keyCode) {
                 KeyEvent.KEYCODE_DPAD_LEFT ->
-                    if (index == 0) { tiles.last().requestFocus(); true } else false
+                    if (index == 0) {
+                        val lastTile: AppTileView? = tiles.lastOrNull()
+                        if (lastTile != null) {
+                            lastTile.requestFocus()
+                            scroller.requestChildFocus(row, lastTile)
+                        }
+                        true
+                    } else false
                 KeyEvent.KEYCODE_DPAD_RIGHT ->
-                    if (index == tiles.lastIndex) { tiles.first().requestFocus(); true } else false
+                    if (index == tiles.lastIndex) {
+                        val firstTile: AppTileView? = tiles.firstOrNull()
+                        if (firstTile != null) {
+                            firstTile.requestFocus()
+                            scroller.requestChildFocus(row, firstTile)
+                        }
+                        true
+                    } else false
                 KeyEvent.KEYCODE_DPAD_UP -> {
                     header.settingsButton.requestFocus()
                     true

@@ -29,7 +29,7 @@ object LogoView {
             val image = ImageView(context)
             image.setImageDrawable(icon)
             image.scaleType = ImageView.ScaleType.FIT_CENTER
-            box.addView(image, LinearLayout.LayoutParams(context.dp(56), context.dp(56)))
+            box.addView(image, LinearLayout.LayoutParams(context.dp(50), context.dp(50)))
         }
 
         // Text part (if any), e.g. the big "N" of Netflix

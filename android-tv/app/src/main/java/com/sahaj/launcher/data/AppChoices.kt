@@ -80,7 +80,8 @@ object AppChoices {
             return null
         }
         // Reuse the soft tile colours of the built-in tiles (same app always gets the same colour).
-        val look = AppCatalog.apps[((pkg.hashCode() % AppCatalog.apps.size) + AppCatalog.apps.size) % AppCatalog.apps.size]
+        val colorIndex = Math.abs(pkg.hashCode()) % AppCatalog.apps.size
+        val look = AppCatalog.apps[colorIndex]
         return AppEntry(
             id = CUSTOM_PREFIX + pkg,
             nameKey = "",
